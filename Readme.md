@@ -1,4 +1,4 @@
-# EasyGal - A simple, photo gallery for the web based on Python3.
+# EasyGal - A simple photo gallery for the web based on Python3.
 
 EasyGal is a straightforward gallery website, which displays the contents of a
 directory as thumbnails on a webpage, throws in fancybox integration, displays
