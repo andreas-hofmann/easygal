@@ -1,0 +1,24 @@
+body {
+  background: black;
+  padding-top: 70px;
+}
+
+.fancybox-close {
+  top: 0;
+  right: 0;
+}
+
+.gallery-thumb {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 15px;
+}
+
+.fancybox-title-over-wrap {
+    width: 100%;
+    padding: 0;
+}
+
+.fancybox-title-over-wrap > div {
+    padding: 10px;
+}
