@@ -1,3 +1,12 @@
+/*!
+ * EasyGal - A simple, photo gallery for the web based on Python3.
+ *
+ * License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ *
+ * Copyright 2015 Andreas Hofmann
+ *
+ */
+
 $( function() {
   function navigate(target) {
     _parent = $('.nav-button[id='+target+"]").parent('li');
