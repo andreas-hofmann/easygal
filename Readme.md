@@ -13,21 +13,37 @@ image-folder, and let the gallery do the rest.
 ## Installation
 ### Install required python modules
 Using pip3:
-`pip3 install bottle mako`
+`sudo pip3 install bottle mako PIL`
 
 For EXIF-tag parsing, you also need exifread:
-`pip3 install exifread`
+`sudo pip3 install exifread`
 
 Under Debian-based you may run alternatively:
-`sudo apt-get install python3-bottle python3-mako`
+`sudo apt-get install python3-bottle python3-mako python3-pil`
 
 ### Run the gallery
 - Edit settings.py to suit your needs (see comments for details)
 - Place some images in the data directory
-- Run it: `./easygal.py`
+- Either run it: `./easygal.py` - Or add the WSGI-script to your webserver's configuration.
+
+### Example config for Apache2 under Debian
+- Install mod\_wsgi for python3: `sudo apt-get install libapache2-mod-wsgi-py3`
+- Add the following lines to your server configuration:
+Make sure the data-directory specified in settings.py is writable from
+
+        WSGIDaemonProcess easygal user=www-data group=www-data processes=1 threads=5
+        WSGIScriptAlias / /var/www/easygal/easygal.wsgi
+
+        <Directory /var/www/easygal>
+            WSGIProcessGroup easygal
+            WSGIApplicationGroup %{GLOBAL}
+            Order deny,allow
+            Allow from all
+        </Directory>
+
+- Restart apache: `sudo service apache2 restart`
 
 ## TODO
-- Support for direct WSGI integration into Apache/nginx/etc.
 - Web-upload for images
 - Support for geotags in images
 
