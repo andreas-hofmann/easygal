@@ -59,7 +59,9 @@ def get_images(directory=None):
     return [os.path.join(directory, f) for f in os.listdir(d) if os.path.isfile(os.path.join(d, f))]
 
 def get_galleries():
-    return [d for d in os.listdir(IMG_ROOT) if os.path.isdir(os.path.join(IMG_ROOT, d))]
+    g = [d for d in os.listdir(IMG_ROOT) if os.path.isdir(os.path.join(IMG_ROOT, d))]
+    g.sort()
+    return g
 
 # Images + thumbnails
 
