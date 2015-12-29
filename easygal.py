@@ -39,6 +39,11 @@ THUMB_ROOT  = settings.DATA_ROOT+"/thumbnails/"
 egapp = Bottle()
 
 # Helpers
+def create_directories():
+    if not os.path.exists(IMG_ROOT):
+        os.makedirs(IMG_ROOT)
+    if not os.path.exists(THUMB_ROOT):
+        os.makedirs(THUMB_ROOT)
 
 def convert_fraction(fraction):
     try:
@@ -156,9 +161,5 @@ def index():
     return Template(filename='templates/index.html').render(sitename=settings.SITE_NAME, sites=sites, galleries=galleries)
 
 if __name__ == "__main__":
-    if not os.path.exists(IMG_ROOT):
-        os.makedirs(IMG_ROOT)
-    if not os.path.exists(THUMB_ROOT):
-        os.makedirs(THUMB_ROOT)
-
+    create_directories()
     run(egapp, host=settings.HOST, port=settings.PORT, reloader=True)
