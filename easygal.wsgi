@@ -4,8 +4,7 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 os.chdir(os.path.dirname(__file__))
 
-import easygal
+from easygal import EasyGal
 
-easygal.create_directories()
-
-application = easygal.egapp
+gal = EasyGal()
+application = gal.get_app()
