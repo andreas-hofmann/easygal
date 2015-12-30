@@ -53,20 +53,26 @@
       </ul>
     </div>
     <div class="login-dropdown navbar-right">
-      <span id="login-dropdown-trigger" class="glyphicon glyphicon-triangle-bottom"></span>
+      <span id="overlay-trigger" class="glyphicon glyphicon-triangle-bottom">${user}</span>
     </div>
   </div>
   </nav>
 
-  <div style='display:none' id='login-overlay' class='login-overlay'>
-    <form id="login-form" action="/login" class="login-form">
+  <div id='user-overlay' class='overlay'>
+    <div class='margin-15'>
+      <button type="button" id='logout-btn' class="btn btn-default">Logout</button>
+    </div>
+  </div>
+
+  <div id='login-overlay' class='overlay'>
+    <form id="login-form" action="/login" class="margin-15">
       <div class="form-group">
         <label for="user" class="control-label">Name</label>
-        <input type="text" class="form-control" id="user">
+        <input type="text" class="form-control" id="user" name="user">
       </div>
       <div class="form-group">
         <label for="password" class="control-label">Password</label>
-        <input type="password" class="form-control" id="password">
+        <input type="password" class="form-control" id="password" name="password">
       </div>
       <button type="submit" id="login-btn" type="button" class="btn btn-default">Login</button>
     </form>

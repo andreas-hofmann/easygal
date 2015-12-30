@@ -17,7 +17,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from bottle import Bottle, static_file, run
+from bottle import Bottle, static_file, run, request, response, abort
 from mako.template import Template
 
 from PIL import Image
@@ -28,6 +28,19 @@ except ImportError:
     exifread = None
 
 import os
+
+def check_login(view):
+    def wrapper(*args, **kwargs):
+        try:
+            _self = args[0]
+        except:
+            abort(500, "Internal error")
+
+        if not request.get_cookie('authorized', secret=_self._secret):
+            abort(401, "Not authorized")
+
+        return view(*args, **kwargs)
+    return wrapper
 
 class EasyGal:
     STATIC_ROOT = "./static/"
@@ -41,6 +54,7 @@ class EasyGal:
 
         self._app = Bottle()
 
+        self._secret = self.settings.SECRET
         self._img_root = self.settings.DATA_ROOT+"/images/"
         self._thumb_root  = self.settings.DATA_ROOT+"/thumbnails/"
 
@@ -52,6 +66,8 @@ class EasyGal:
             attr = getattr(self, kw)
             if hasattr(attr, 'route_from'):
                 self._app.route(attr.route_from)(attr)
+            if hasattr(attr, 'post_from'):
+                self._app.post(attr.post_from)(attr)
 
     def _create_directories(self):
         if not os.path.exists(self._img_root):
@@ -154,6 +170,30 @@ class EasyGal:
         return Template(filename='templates/gallery.html').render(imgs=images, name=selection)
     _view_gallery.route_from = '/gallery/<selection>'
 
+    # Login handlers
+
+    def _login(self):
+        # TODO: Set up DB connection + verify user
+        user = request.forms.get('user')
+        pw = request.forms.get('password')
+        if user == "admin" and pw == "admin":
+            response.set_cookie('authorized', user, secret=self._secret)
+            return user
+        abort(401, "Not authorized")
+    _login.post_from = [ '/login' ]
+
+    def _logout(self):
+        if request.get_cookie('authorized', secret=self._secret):
+            response.set_cookie('authorized', '')
+        return 'OK'
+    _logout.post_from = [ '/logout' ]
+
+    # Upload handler
+    @check_login
+    def _upload(self):
+        return 'TODO'
+    _upload.post_from = [ '/upload' ]
+
     # Generic view
     def _generic_site(self, site):
         sites = self.settings.SITES
@@ -174,7 +214,10 @@ class EasyGal:
             sites.append(s[0])
             if s[0].lower() == "gallery":
                 galleries = self._get_galleries()
-        return Template(filename='templates/index.html').render(sitename=self.settings.SITE_NAME, sites=sites, galleries=galleries)
+        user = request.get_cookie('authorized', secret=self._secret)
+        if not user:
+            user = ''
+        return Template(filename='templates/index.html').render(user=user, sitename=self.settings.SITE_NAME, sites=sites, galleries=galleries)
     _index.route_from = [ '/' ]
 
     def get_app(self):

@@ -21,3 +21,6 @@ SITES = [
     ["Gallery"],
     ["About", "About goes here"],
 ]
+
+# Secret used to sign cookies. Change this!
+SECRET = "shoo5sheeraeX5yaichohyuxeeg2re"

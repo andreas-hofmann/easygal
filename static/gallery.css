@@ -15,12 +15,12 @@ body {
 }
 
 .fancybox-title-over-wrap {
-    width: 100%;
-    padding: 0;
+  width: 100%;
+  padding: 0;
 }
 
 .fancybox-title-over-wrap > div {
-    padding: 10px;
+  padding: 10px;
 }
 
 .login-dropdown {
@@ -29,7 +29,11 @@ body {
   right: 25px;
 }
 
-.login-overlay {
+span#overlay-trigger {
+  cursor: default;
+}
+
+.overlay {
   position: absolute;
   top: 60px;
   right: 5px;
@@ -40,8 +44,9 @@ body {
   z-index: 999;
   background-color: rgba(30,30,30,0.5);
   border-radius: 10px;
+  display: none;
 }
 
-.login-form {
+.margin-15 {
   margin: 15px;
 }

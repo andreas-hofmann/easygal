@@ -8,6 +8,8 @@
  */
 
 $( function() {
+  var g_speed = 250;
+
   function navigate(target) {
     _parent = $('.nav-button[id='+target+"]").parent('li');
 
@@ -27,9 +29,9 @@ $( function() {
 
     _parent.addClass('active');
 
-    $('#main').animate({ opacity: 0.00 }, 500, function() {
+    $('#main').animate({ opacity: 0.00 }, g_speed, function() {
       $('#main').load(baseurl+target, null, function() { 
-        $('#main').animate({ opacity: 1.00 }, 500);
+        $('#main').animate({ opacity: 1.00 }, g_speed);
 
         if (trigger_fancybox) {
           $(".fancybox").fancybox({
@@ -85,6 +87,8 @@ $( function() {
     });
   }
 
+  var g_loggedIn;
+
   $(document).ready(function() {
     $('a.nav-button').each( function() {
       $(this).click( function() {
@@ -94,33 +98,42 @@ $( function() {
     navigate($(".nav-button").first().attr('id'));
   });
 
-  function showLogin() {
-    overlay = $('#login-overlay');
-    overlay.show('blind', 500);
-    $('#login-dropdown-trigger').switchClass('glyphicon-triangle-bottom', 'glyphicon-triangle-top', 500);
+  function showOverlay(id) {
+    overlay = $(id);
+    overlay.show('blind', g_speed);
+    $('#overlay-trigger').switchClass('glyphicon-triangle-bottom', 'glyphicon-triangle-top', g_speed);
 
-    $(document).click( function() { hideLogin(); });
+    $(document).click( function() { hideOverlays(); });
     overlay.click( function(e) { e.stopPropagation(); });
   }
 
-  function hideLogin() {
-    overlay = $('#login-overlay');
-    overlay.find('input').each( function () {
-      $(this).val('');
-    });
-    overlay.hide('blind', 500);
-    $('#login-dropdown-trigger').switchClass('glyphicon-triangle-top', 'glyphicon-triangle-bottom', 500);
-    overlay = $('#login-overlay');
+  function hideOverlays() {
+    $('.overlay').each(function() {
+      overlay = $(this);
+      overlay.find('input').each( function () {
+        $(this).val('');
+      });
+      overlay.hide('blind', g_speed);
+      $('#overlay-trigger').switchClass('glyphicon-triangle-top', 'glyphicon-triangle-bottom', g_speed);
+      overlay = $('#login-overlay');
 
-    $(document).click( function() {  });
-    overlay.click( function(e) {  });
+      $(document).click( function() {  });
+      overlay.click( function(e) {  });
+    });
   }
 
   $('div.login-dropdown').click( function (e) {
-    if ($('#login-overlay').is(':hidden'))
-      showLogin();
-    else
-      hideLogin();
+    if ($('span#overlay-trigger').text()) {
+        overlay = '#user-overlay';
+    } else {
+        overlay = '#login-overlay';
+    }
+
+    if ($(overlay).is(':hidden')) {
+      showOverlay(overlay);
+    } else {
+      hideOverlays();
+    }
 
     e.stopPropagation();
   });
@@ -136,9 +149,54 @@ $( function() {
         $(this).closest('.form-group').removeClass('has-error has-feedback');
       }
     });
+
     event.preventDefault();
+
     if (submit) {
-      // TODO: Submit login + check result
+      $('#login-btn').removeClass('btn-danger');
+      $('#login-btn').addClass('btn-default');
+      console.log('data='+$('form#login-form').serialize());
+      $.ajax({
+          url: '/login',
+          type: 'POST',
+          data: $('form#login-form').serialize(),
+          success: function(data) {
+            if (data) {
+                hideOverlays();
+                $('#overlay-trigger').html(data);
+            }
+          },
+          error: function(error) {
+            console.log(error);
+            $('#login-btn').switchClass('btn-default', 'btn-danger', g_speed);
+          }
+      });
     }
   });
+
+  $('#logout-btn').click( function () {
+      $.ajax({
+          url: '/logout',
+          type: 'POST',
+          data: $('form#login-form').serialize(),
+          success: function(data) {
+            if (data) {
+                hideOverlays();
+                $('#overlay-trigger').html('');
+            }
+          },
+          error: function(error) {
+            console.log(error);
+            $.cookie("authorized", null, { path: '/' });
+            $('#overlay-trigger').html('');
+            hideOverlays();
+          }
+      });
+  });
+
+  function login(user) {
+  }
+
+  function logout() {
+  }
 });
