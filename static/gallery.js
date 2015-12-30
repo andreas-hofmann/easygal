@@ -93,4 +93,52 @@ $( function() {
     });
     navigate($(".nav-button").first().attr('id'));
   });
+
+  function showLogin() {
+    overlay = $('#login-overlay');
+    overlay.show('blind', 500);
+    $('#login-dropdown-trigger').switchClass('glyphicon-triangle-bottom', 'glyphicon-triangle-top', 500);
+
+    $(document).click( function() { hideLogin(); });
+    overlay.click( function(e) { e.stopPropagation(); });
+  }
+
+  function hideLogin() {
+    overlay = $('#login-overlay');
+    overlay.find('input').each( function () {
+      $(this).val('');
+    });
+    overlay.hide('blind', 500);
+    $('#login-dropdown-trigger').switchClass('glyphicon-triangle-top', 'glyphicon-triangle-bottom', 500);
+    overlay = $('#login-overlay');
+
+    $(document).click( function() {  });
+    overlay.click( function(e) {  });
+  }
+
+  $('div.login-dropdown').click( function (e) {
+    if ($('#login-overlay').is(':hidden'))
+      showLogin();
+    else
+      hideLogin();
+
+    e.stopPropagation();
+  });
+
+  $('form#login-form').submit( function (event) {
+    var submit = true;
+    overlay = $('#login-overlay');
+    overlay.find('input').each( function () {
+      if ($(this).val() === '') {
+        $(this).closest('.form-group').addClass('has-error has-feedback');
+        submit = false;
+      } else {
+        $(this).closest('.form-group').removeClass('has-error has-feedback');
+      }
+    });
+    event.preventDefault();
+    if (submit) {
+      // TODO: Submit login + check result
+    }
+  });
 });
