@@ -135,7 +135,7 @@ class EasyGal:
 
     def _static(self, filename):
         return static_file(filename, root=self.STATIC_ROOT)
-    _static.route_from = [ '/static/<filename>' ]
+    _static.route_from = [ '/static/<filename:path>' ]
 
     # Buttons in navbar
 
