@@ -22,6 +22,8 @@ from mako.template import Template
 
 from PIL import Image
 
+import json
+
 try:
     import exifread
 except ImportError:
@@ -68,6 +70,8 @@ class EasyGal:
                 self._app.route(attr.route_from)(attr)
             if hasattr(attr, 'post_from'):
                 self._app.post(attr.post_from)(attr)
+            if hasattr(attr, 'delete_from'):
+                self._app.delete(attr.delete_from)(attr)
 
     def _create_directories(self):
         if not os.path.exists(self._img_root):
@@ -190,9 +194,72 @@ class EasyGal:
 
     # Upload handler
     @check_login
-    def _upload(self):
-        return 'TODO'
-    _upload.post_from = [ '/upload' ]
+    def _upload(self, gallery=""):
+        upload = request.files.get('files[]')
+
+        gallery_str = ""
+
+        if gallery:
+            gallery_str = gallery + "\\/"
+
+        _filename   = upload.filename
+        _url        = "\\/img\\/" + gallery_str + _filename
+        _thumburl   = "\\/thumb\\/" + gallery_str + _filename
+        _deleteurl  = "\\/delete\\/" + gallery_str + _filename
+
+        name, ext = os.path.splitext(_filename)
+
+        error = None
+
+        if ext not in ('.png','.jpg','.jpeg'):
+            error = "Filetype not allowed"
+        else:
+            savepath = os.path.join(self._img_root, gallery, _filename)
+            try:
+                upload.save(savepath, True)
+                data = { 'files' : [
+                    {
+                        "name" : _filename,
+                        "size" : os.path.getsize(savepath),
+                        "url" : _url,
+                        "thumbnailUrl": _thumburl,
+                        "deleteUrl" : _deleteurl,
+                        "deleteType" : "DELETE"
+                    },
+                ] }
+            except:
+                error = "Could not store file"
+
+        if error:
+            data = { 'files' : [
+                {
+                    "name": _filename,
+                    "size": 0,
+                    "error": error
+                },
+            ]}
+
+        return json.dumps(data)
+    _upload.post_from = [ '/upload/<gallery>' ]
+
+    @check_login
+    def _delete(self, image, gallery=""):
+        result = "false"
+
+        name, ext = os.path.splitext(image)
+        if ext in ('.png','.jpg','.jpeg'):
+            delpath = os.path.join(self._img_root, gallery, _filename)
+            if os.path.exists(delpath):
+                os.remove(delpath)
+                result = "true"
+
+        data = { 'files' : [
+            {
+                _filename : result
+            },
+        ]}
+        return json.dumps(data)
+    _delete.delete_from = [ '/delete/<gallery>/<image>' ]
 
     # Generic view
     def _generic_site(self, site):
