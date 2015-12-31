@@ -1,0 +1,6 @@
+[submodule "static/fileupload"]
+	path = static/fileupload
+	url = https://github.com/blueimp/jQuery-File-Upload.git
+[submodule "static/fancybox"]
+	path = static/fancybox
+	url = https://github.com/fancyapps/fancyBox.git
