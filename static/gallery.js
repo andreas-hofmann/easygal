@@ -101,7 +101,7 @@ $( function() {
     overlay.show('blind', g_speed);
     $('#overlay-trigger').switchClass('glyphicon-triangle-bottom', 'glyphicon-triangle-top', g_speed);
 
-    $(document).click( function() { hideOverlays(); });
+    $(document).click( hideOverlays );
     overlay.click( function(e) { e.stopPropagation(); });
   }
 
@@ -115,7 +115,7 @@ $( function() {
       $('#overlay-trigger').switchClass('glyphicon-triangle-top', 'glyphicon-triangle-bottom', g_speed);
       overlay = $('#login-overlay');
 
-      $(document).unbind('click');
+      $(document).unbind('click', hideOverlays);
       overlay.unbind('click');
     });
   }
@@ -142,7 +142,7 @@ $( function() {
   });
 
   $('#upload-btn').click( function() {
-    $(document).unbind('click');
+    $(document).unbind('click', hideOverlays);
     overlay.unbind('click');
 
     $('#user-overlay').hide('blind', g_speed);
