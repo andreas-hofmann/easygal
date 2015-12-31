@@ -87,8 +87,6 @@ $( function() {
     });
   }
 
-  var g_loggedIn;
-
   $(document).ready(function() {
     $('a.nav-button').each( function() {
       $(this).click( function() {
@@ -117,12 +115,17 @@ $( function() {
       $('#overlay-trigger').switchClass('glyphicon-triangle-top', 'glyphicon-triangle-bottom', g_speed);
       overlay = $('#login-overlay');
 
-      $(document).click( function() {  });
-      overlay.click( function(e) {  });
+      $(document).unbind('click');
+      overlay.unbind('click');
     });
   }
 
   $('div.login-dropdown').click( function (e) {
+    if (!$('#upload-overlay').is(':hidden')) {
+      hideOverlays();
+      return;
+    }
+
     if ($('span#overlay-trigger').text()) {
         overlay = '#user-overlay';
     } else {
@@ -136,6 +139,14 @@ $( function() {
     }
 
     e.stopPropagation();
+  });
+
+  $('#upload-btn').click( function() {
+    $(document).unbind('click');
+    overlay.unbind('click');
+
+    $('#user-overlay').hide('blind', g_speed);
+    $('#upload-overlay').show('blind', g_speed);
   });
 
   $('form#login-form').submit( function (event) {
@@ -194,9 +205,63 @@ $( function() {
       });
   });
 
-  function login(user) {
+  function handleGalleryChange() {
+    if ($('input#upload-gallery').val().length > 0) {
+      $('#fileupload-area').show('blind', g_speed)
+    } else {
+      $('#fileupload-area').hide('blind', g_speed);
+    }
   }
 
-  function logout() {
-  }
+  $('#gallery-select').change( function() {
+    var gallery = $('#upload-gallery');
+    var index = $('#gallery-select').prop('selectedIndex');
+
+    if (index === 0) {
+      gallery.val('');
+      $('#gallery-input-area').hide('blind', g_speed);
+    } else if (index+1 === $('#gallery-select option').size()) {
+      gallery.val('');
+      $('#gallery-input-area').show('blind', g_speed);
+    } else {
+      gallery.val($('#gallery-select').val());
+      $('#gallery-input-area').hide('blind', g_speed);
+    }
+
+    handleGalleryChange();
+  });
+
+  $('input#upload-gallery').on('change keyup paste', function() {
+    handleGalleryChange();
+  });
+
+  $('#fileupload').fileupload({
+      url: '/upload/' + $('input#upload-gallery').text(),
+      dataType: 'json',
+      done: function (e, data) {
+        $.each(data.result.files, function (index, file) {
+            $('<p/>').text(file.name).appendTo('#files');
+        });
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .progress-bar').css(
+            'width', '0%'
+        );
+        $('#gallery-select-area :input').prop('disabled', false);
+        $('#gallery-input-area :input').prop('disabled', false);
+        $('#fileupload-area :input').prop('disabled', false);
+      },
+      progressall: function (e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .progress-bar').css(
+            'width',
+            progress + '%'
+        );
+      },
+      submit: function (e, data) {
+        $('#gallery-select-area :input').prop('disabled', true);
+        $('#gallery-input-area :input').prop('disabled', true);
+        $('#fileupload-area :input').prop('disabled', true);
+      }
+  }).prop('disabled', !$.support.fileInput)
+      .parent().addClass($.support.fileInput ? undefined : 'disabled');
 });

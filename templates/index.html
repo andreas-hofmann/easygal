@@ -19,6 +19,16 @@
   <link rel="stylesheet" href="/static/fancybox/jquery.fancybox-buttons.css" type="text/css" media="screen" />
   <script type="text/javascript" src="/static/fancybox/jquery.fancybox-buttons.js"></script>
 
+  <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+  <link rel="stylesheet" href="static/fileupload/css/style.css">
+  <link rel="stylesheet" href="static/fileupload/css/jquery.fileupload.css">
+
+  <script src="static/fileupload/js/vendor/jquery.ui.widget.js"></script>
+  <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+  <script src="static/fileupload/js/jquery.iframe-transport.js"></script>
+  <!-- The basic File Upload plugin -->
+  <script src="static/fileupload/js/jquery.fileupload.js"></script>
+
   <!-- own css/js -->
   <script src="/static/gallery.js"></script>
   <link rel="stylesheet" href="/static/gallery.css">
@@ -60,7 +70,46 @@
 
   <div id='user-overlay' class='overlay'>
     <div class='margin-15'>
-      <button type="button" id='logout-btn' class="btn btn-default">Logout</button>
+      <button type="button" id='upload-btn' class="btn btn-primary">Upload images</button>
+      <button type="button" id='logout-btn' class="btn btn-warning">Logout</button>
+    </div>
+  </div>
+
+  <div id='upload-overlay' class='overlay'>
+    <div class='margin-15'>
+      <div id="gallery-select-area" class="form-group">
+        <label for="gallery-select" class="control-label">Gallery</label>
+        <select class="form-control" id="gallery-select">
+          <option>- Select -</option>
+          % for g in galleries:
+          <option>${g}</option>
+          % endfor
+          <option>- New gallery -</option>
+        </select>
+      </div>
+
+     <div style="display:none" id="gallery-input-area" class="form-group">
+       <label for="upload-gallery" class="control-label">Gallery name</label>
+       <input type="text" class="form-control" name="upload-gallery" id="upload-gallery">
+     </div>
+
+      <div style="display:none" id="fileupload-area">
+        <!-- The fileinput-button span is used to style the file input field as button -->
+        <span class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-plus"></i>
+            <span>Select files...</span>
+            <!-- The file input field used as target for the file upload widget -->
+            <input id="fileupload" type="file" name="files[]" multiple>
+        </span>
+        <br>
+        <br>
+        <!-- The global progress bar -->
+        <div id="progress" class="progress">
+            <div class="progress-bar progress-bar-success"></div>
+        </div>
+        <!-- The container for the uploaded files -->
+        <div id="files" class="files"></div>
+      </div>
     </div>
   </div>
 
@@ -74,11 +123,11 @@
         <label for="password" class="control-label">Password</label>
         <input type="password" class="form-control" id="password" name="password">
       </div>
-      <button type="submit" id="login-btn" type="button" class="btn btn-default">Login</button>
+      <button type="submit" id="login-btn" type="button" class="btn btn-primary">Login</button>
     </form>
   </div>
 
   <div id="main"></div>
-</body>
 
+</body>
 </html>
