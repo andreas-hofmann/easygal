@@ -98,7 +98,7 @@ $( function() {
 
   function showOverlay(id) {
     overlay = $(id);
-    overlay.show('blind', g_speed);
+    overlay.show('fade', g_speed);
     $('#overlay-trigger').switchClass('glyphicon-triangle-bottom', 'glyphicon-triangle-top', g_speed);
 
     $(document).click( hideOverlays );
@@ -111,7 +111,7 @@ $( function() {
       overlay.find('input').each( function () {
         $(this).val('');
       });
-      overlay.hide('blind', g_speed);
+      overlay.hide('fade', g_speed);
       $('#overlay-trigger').switchClass('glyphicon-triangle-top', 'glyphicon-triangle-bottom', g_speed);
       overlay = $('#login-overlay');
 
@@ -209,10 +209,10 @@ $( function() {
 
   function handleGalleryChange() {
     if ($('input#upload-gallery').val().length > 0) {
-      $('#fileupload-area').show('blind', g_speed);
+      $('#fileupload-area').show('fade', g_speed);
       $('#fileupload').fileupload('option', { url: '/upload/' + $('input#upload-gallery').val() })
     } else {
-      $('#fileupload-area').hide('blind', g_speed);
+      $('#fileupload-area').hide('fade', g_speed);
     }
   }
 
@@ -222,13 +222,13 @@ $( function() {
 
     if (index === 0) {
       gallery.val('');
-      $('#gallery-input-area').hide('blind', g_speed);
+      $('#gallery-input-area').hide('fade', g_speed);
     } else if (index+1 === $('#gallery-select option').size()) {
       gallery.val('');
-      $('#gallery-input-area').show('blind', g_speed);
+      $('#gallery-input-area').show('fade', g_speed);
     } else {
       gallery.val($('#gallery-select').val());
-      $('#gallery-input-area').hide('blind', g_speed);
+      $('#gallery-input-area').hide('fade', g_speed);
     }
 
     handleGalleryChange();
