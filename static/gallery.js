@@ -207,7 +207,8 @@ $( function() {
 
   function handleGalleryChange() {
     if ($('input#upload-gallery').val().length > 0) {
-      $('#fileupload-area').show('blind', g_speed)
+      $('#fileupload-area').show('blind', g_speed);
+      $('#fileupload').fileupload('option', { url: '/upload/' + $('input#upload-gallery').val() })
     } else {
       $('#fileupload-area').hide('blind', g_speed);
     }
@@ -236,7 +237,7 @@ $( function() {
   });
 
   $('#fileupload').fileupload({
-      url: '/upload/' + $('input#upload-gallery').text(),
+      url: '/upload/',
       dataType: 'json',
       done: function (e, data) {
         $.each(data.result.files, function (index, file) {
