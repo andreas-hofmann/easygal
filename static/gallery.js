@@ -241,6 +241,16 @@ $( function() {
   $('#fileupload').fileupload({
       url: '/upload/',
       dataType: 'json',
+      stop: function (e, data) {
+        gallery = $('input#upload-gallery').val();
+
+        if ($('ul.dropdown-menu').has("li#"+gallery)) {
+          $('ul.dropdown-menu').append('<li class="dropdown-button"><a class="nav-button" id="'
+                                          +gallery+'" href="#">'+gallery+'</a></li>');
+        }
+
+        navigate(gallery);
+      },
       done: function (e, data) {
         $.each(data.result.files, function (index, file) {
             $('<p/>').text(file.name).appendTo('#files');
