@@ -214,13 +214,18 @@ class EasyGal:
         if ext not in ('.png','.jpg','.jpeg'):
             error = "Filetype not allowed"
         else:
-            savepath = os.path.join(self._img_root, gallery, _filename)
+            savedir = os.path.join(self._img_root, gallery)
+            savefile = os.path.join(savedir, _filename)
+
+            if not os.path.exists(savedir):
+                os.makedirs(savedir)
+
             try:
-                upload.save(savepath, True)
+                upload.save(savefile, True)
                 data = { 'files' : [
                     {
                         "name" : _filename,
-                        "size" : os.path.getsize(savepath),
+                        "size" : os.path.getsize(savefile),
                         "url" : _url,
                         "thumbnailUrl": _thumburl,
                         "deleteUrl" : _deleteurl,
