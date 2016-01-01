@@ -117,6 +117,8 @@ $( function() {
 
       $(document).unbind('click', hideOverlays);
       overlay.unbind('click');
+
+      $('#files').text('');
     });
   }
 
