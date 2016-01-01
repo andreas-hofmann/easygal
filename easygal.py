@@ -248,14 +248,14 @@ class EasyGal:
 
         name, ext = os.path.splitext(image)
         if ext in ('.png','.jpg','.jpeg'):
-            delpath = os.path.join(self._img_root, gallery, _filename)
+            delpath = os.path.join(self._img_root, gallery, image)
             if os.path.exists(delpath):
                 os.remove(delpath)
                 result = "true"
 
         data = { 'files' : [
             {
-                _filename : result
+                'filename' : result
             },
         ]}
         return json.dumps(data)
