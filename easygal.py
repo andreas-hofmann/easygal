@@ -23,13 +23,14 @@ from mako.template import Template
 from PIL import Image
 
 import json
+import os
 
 try:
     import exifread
 except ImportError:
     exifread = None
 
-import os
+from secrets import SecretsStorage
 
 def check_login(view):
     def wrapper(*args, **kwargs):
@@ -56,12 +57,14 @@ class EasyGal:
 
         self._app = Bottle()
 
-        self._secret = self.settings.SECRET
         self._img_root = self.settings.DATA_ROOT+"/images/"
         self._thumb_root  = self.settings.DATA_ROOT+"/thumbnails/"
 
         self._setup_routes()
         self._create_directories()
+
+        self._secretsstorage = SecretsStorage(self.settings.DATA_ROOT+"/passwd")
+        self._secret = self._secretsstorage.secret
 
     def _setup_routes(self):
         for kw in dir(self):
@@ -180,7 +183,7 @@ class EasyGal:
         # TODO: Set up DB connection + verify user
         user = request.forms.get('user')
         pw = request.forms.get('password')
-        if user == "admin" and pw == "admin":
+        if self._secretsstorage.check_pw(user, pw):
             response.set_cookie('authorized', user, secret=self._secret)
             return user
         abort(401, "Not authorized")
