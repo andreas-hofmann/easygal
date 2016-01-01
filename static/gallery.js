@@ -147,8 +147,8 @@ $( function() {
     $(document).unbind('click', hideOverlays);
     overlay.unbind('click');
 
-    $('#user-overlay').hide('blind', g_speed);
-    $('#upload-overlay').show('blind', g_speed);
+    $('#user-overlay').hide('fade', g_speed);
+    $('#upload-overlay').show('fade', g_speed);
   });
 
   $('form#login-form').submit( function (event) {
