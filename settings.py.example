@@ -1,3 +1,5 @@
+# Example settings file. Adjust the values here to your needs and save to settings.py
+
 # Data directory to use. Must be  writable.
 # Directories containing images must be placed inside the
 # "images" directory inside this folder.
