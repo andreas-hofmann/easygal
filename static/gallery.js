@@ -167,7 +167,7 @@ $( function() {
 
     if (submit) {
       $('#login-btn').removeClass('btn-danger');
-      $('#login-btn').addClass('btn-default');
+      $('#login-btn').addClass('btn-primary');
       console.log('data='+$('form#login-form').serialize());
       $.ajax({
           url: '/login',
@@ -181,7 +181,7 @@ $( function() {
           },
           error: function(error) {
             console.log(error);
-            $('#login-btn').switchClass('btn-default', 'btn-danger', g_speed);
+            $('#login-btn').switchClass('btn-primary', 'btn-danger', g_speed);
           }
       });
     }
