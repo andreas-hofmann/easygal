@@ -261,6 +261,9 @@ class EasyGal:
                 os.remove(delpath)
                 result = "true"
 
+        if not self._get_images(gallery):
+            os.rmdir(os.path.join(self._img_root, gallery))
+
         data = { 'files' : [
             {
                 'filename' : result
