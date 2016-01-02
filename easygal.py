@@ -19,6 +19,7 @@
 
 from bottle import Bottle, static_file, run, request, response, abort
 from mako.template import Template
+from urllib.parse import quote
 
 from PIL import Image
 
@@ -175,7 +176,7 @@ class EasyGal:
                 except:
                     text = ""
 
-            images.append([i, text])
+            images.append([quote(i), text])
 
         return Template(filename='templates/gallery.html').render(imgs=images, name=selection)
     _view_gallery.route_from = '/gallery/<selection>'

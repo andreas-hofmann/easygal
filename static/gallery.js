@@ -11,7 +11,7 @@ $( function() {
   var g_speed = 250;
 
   function navigate(target) {
-    _parent = $('.nav-button[id='+target+"]").parent('li');
+    _parent = $('.nav-button[id="'+target+'"]').parent('li');
 
     $('li.dropdown').removeClass('active');
     $('a.nav-button').each( function() {
@@ -34,11 +34,11 @@ $( function() {
     _parent.addClass('active');
 
     $('#main').animate({ opacity: 0.00 }, g_speed, function() {
-      $('#main').load(baseurl+target, null, function(response, status, xhr) {
+      $('#main').load(baseurl+encodeURIComponent(target), null, function(response, status, xhr) {
         $('#main').animate({ opacity: 1.00 }, g_speed);
 
         if (status == "error") {
-            $('#main').html("<div class='error'>Error: " + xhr.status + ": " + xhr.statusText + "</div>");
+            $('#main').html("<div class='error'>Error: " + xhr.status + ": " + xhr.statusText);
             return;
         }
 
