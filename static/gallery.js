@@ -24,7 +24,7 @@ $( function() {
     if (_parent.hasClass('dropdown-button')) {
       $('li.dropdown').addClass('active');
       baseurl += "gallery/";
-      trigger_fancybox = true
+      trigger_fancybox = true;
     }
 
     _parent.addClass('active');
@@ -144,11 +144,11 @@ $( function() {
   });
 
   $('#upload-btn').click( function() {
-    $(document).unbind('click', hideOverlays);
-    overlay.unbind('click');
-
     $('#user-overlay').hide('fade', g_speed);
-    $('#upload-overlay').show('fade', g_speed);
+
+    var overlay = $('#upload-overlay');
+    overlay.click( function(e) { e.stopPropagation(); });
+    overlay.show('fade', g_speed);
   });
 
   $('form#login-form').submit( function (event) {
@@ -249,6 +249,7 @@ $( function() {
                                           +gallery+'" href="#">'+gallery+'</a></li>');
         }
 
+        $(document).click( hideOverlays );
         navigate(gallery);
       },
       done: function (e, data) {
@@ -271,9 +272,12 @@ $( function() {
         );
       },
       submit: function (e, data) {
+        handleGalleryChange();
         $('#gallery-select-area :input').prop('disabled', true);
         $('#gallery-input-area :input').prop('disabled', true);
         $('#fileupload-area :input').prop('disabled', true);
+
+        $(document).unbind('click', hideOverlays);
       }
   }).prop('disabled', !$.support.fileInput)
       .parent().addClass($.support.fileInput ? undefined : 'disabled');
