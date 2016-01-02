@@ -6,13 +6,13 @@
   </div>
 % for img in imgs:
   <div class="row">
-    <div class="col-xs-2 gallery-image-left" id="${img[0]}"></div>
-    <div id="image" class="col-xs-8">
+    <div class="col-xs-3 gallery-image-left" id="${img[0]}"></div>
+    <div id="image" class="col-xs-6">
       <a class="fancybox" rel="fancybox-thumb" title="${img[1]}" href="/img/${img[0]}">
         <img class="img-responsive gallery-thumb" alt="" src=/thumb/${img[0]}></img>
       </a>
     </div>
-    <div class="col-xs-2 gallery-image-right" id="${img[0]}"></div>
+    <div class="col-xs-3 gallery-image-right" id="${img[0]}"></div>
   </div>
 % endfor
 </div>
