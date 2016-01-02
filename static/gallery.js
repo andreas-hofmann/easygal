@@ -255,7 +255,7 @@ $( function() {
       stop: function (e, data) {
         gallery = $('input#upload-gallery').val();
 
-        if (!$('ul.dropdown-menu').has("li#"+gallery)) {
+        if ($('ul.dropdown-menu:has(li #'+gallery+')').length == 0) {
           $('ul.dropdown-menu').append('<li class="dropdown-button"><a class="nav-button" id="'
                                           +gallery+'" href="#">'+gallery+'</a></li>');
         }
