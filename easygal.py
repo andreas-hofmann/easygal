@@ -94,7 +94,10 @@ class EasyGal:
         d = self._img_root
         if directory:
             d += directory
-        return [os.path.join(directory, f) for f in os.listdir(d) if os.path.isfile(os.path.join(d, f))]
+        try:
+            return [os.path.join(directory, f) for f in os.listdir(d) if os.path.isfile(os.path.join(d, f))]
+        except FileNotFoundError:
+            return []
 
     def _get_galleries(self):
         g = [d for d in os.listdir(self._img_root) if os.path.isdir(os.path.join(self._img_root, d))]
