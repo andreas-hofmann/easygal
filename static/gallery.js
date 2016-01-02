@@ -21,19 +21,30 @@ $( function() {
     baseurl = "/";
     trigger_fancybox = false
 
+    enableDelete(false);
+
     if (_parent.hasClass('dropdown-button')) {
       $('li.dropdown').addClass('active');
       baseurl += "gallery/";
       trigger_fancybox = true;
+    } else {
+      $('#delete-btn').hide();
     }
 
     _parent.addClass('active');
 
     $('#main').animate({ opacity: 0.00 }, g_speed, function() {
-      $('#main').load(baseurl+target, null, function() { 
+      $('#main').load(baseurl+target, null, function(response, status, xhr) {
         $('#main').animate({ opacity: 1.00 }, g_speed);
 
+        if (status == "error") {
+            $('#main').html("<div class='error'>Error: " + xhr.status + ": " + xhr.statusText + "</div>");
+            return;
+        }
+
         if (trigger_fancybox) {
+          $('#delete-btn').show();
+
           $(".fancybox").fancybox({
               openEffect  : 'elastic',
               closeEffect : 'elastic',
@@ -281,4 +292,115 @@ $( function() {
       }
   }).prop('disabled', !$.support.fileInput)
       .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+  var g_imagesToDelete = []
+
+  function updateDeleteConfirmButton() {
+    if (g_imagesToDelete.length) {
+      $('#delete-btn-overlay').show('fade', g_speed);
+      $('#confirm-delete-btn').click( confirmDelete );
+    } else {
+      $('#delete-btn-overlay').hide('fade', g_speed);
+    }
+  }
+
+  function clickDeleteCheckbox() {
+      if ($(this).is(':checked')) {
+          g_imagesToDelete.push($(this).attr('id'));
+      } else {
+          var index = g_imagesToDelete.indexOf($(this).attr('id'));
+          if (index > -1) {
+            g_imagesToDelete.splice(index, 1);
+          }
+      }
+
+      updateDeleteConfirmButton();
+  }
+
+  function updateDeleteButton(enable) {
+    if (enable) {
+        $('#delete-btn').switchClass('btn-primary', 'btn-warning', g_speed);
+        $('#delete-btn').text('Cancel deletion');
+    } else {
+        $('#delete-btn').switchClass('btn-warning', 'btn-primary', g_speed);
+        $('#delete-btn').text('Delete images');
+    }
+  }
+
+  function enableDelete(enable) {
+    updateDeleteButton(enable);
+
+    g_imagesToDelete = []
+    updateDeleteConfirmButton();
+
+    $('.gallery-image-right').each( function() {
+        if ($(this).find('.glyphicon-ok').length) {
+          $(this).parent('div.row').remove();
+          return;
+        }
+
+        $(this).find('.glyphicon-warning-sign').each( function() {
+          $(this).find('.glyphicon-warning-sign').remove();
+        });
+
+        if (enable) {
+            $(this).append('<div class="delete-confirmation checkbox"><label>' +
+                           '<input type="checkbox" value="0">' +
+                           '<i class="glyphicon glyphicon-remove"></i></label></div>');
+            $(this).find('input').each( function() { $(this).click( clickDeleteCheckbox ); });
+        } else {
+            $(this).find('div.delete-confirmation').each( function() { $(this).remove(); });
+        }
+    });
+  }
+
+  function finishDelete() {
+      enableDelete(false);
+  }
+
+  $('#delete-btn').click( function() {
+      if ($('#delete-btn').hasClass('btn-primary')) {
+        enableDelete(true);
+      } else {
+        enableDelete(false);
+      }
+  });
+
+  function confirmDelete() {
+    $('div.gallery-image-right').each( function() {
+        var url = null;
+        var _this = $(this);
+
+        if (_this.find('input').is(':checked')) {
+          _this.find('div.delete-confirmation').each( function() { $(this).remove(); });
+          _this.append('<i class="glyphicon glyphicon-refresh delete-result"></i>');
+          url = '/delete/' + _this.attr('id');
+        } else {
+          _this.find('div.delete-confirmation').each( function() { $(this).remove(); });
+        }
+
+        $('#delete-btn-overlay').hide('fade', g_speed);
+        updateDeleteButton(false);
+
+        if (!url)
+            return;
+
+        $.ajax({
+          url: url,
+          type: 'DELETE',
+          success: function(data) {
+            if (data) {
+              _this.find('i').each( function() { $(this).remove(); });
+              _this.append('<i class="glyphicon glyphicon-ok delete-result"></i>');
+              window.setTimeout( finishDelete, 3000 );
+            }
+          },
+          error: function(error) {
+            console.log(error);
+            _this.find('i').each( function() { $(this).remove(); });
+            _this.append('<i class="glyphicon glyphicon-warning-sign delete-result"></i>');
+          }
+        });
+    });
+  }
 });
