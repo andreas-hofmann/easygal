@@ -162,6 +162,7 @@ class EasyGal:
 
                         fstop = self._convert_fraction(str(tags['EXIF FNumber']))
                         flength = self._convert_fraction(str(tags['EXIF FocalLength']))
+                        bias = self._convert_fraction(str(tags['EXIF ExposureBiasValue']))
 
                         text += "Shot on " + str(tags['EXIF DateTimeOriginal'])
                         text += " with a " + str(tags['Image Make'])
@@ -170,7 +171,7 @@ class EasyGal:
                         text += ", F" + str(fstop)
                         text += ", "+ str(tags['EXIF ExposureTime']) + "s"
                         text += ", ISO " + str(tags['EXIF ISOSpeedRatings'])
-                        text += ", " + str(tags['EXIF ExposureBiasValue']) + " EV"
+                        text += ", " + str(bias) + " EV"
                         text += " in " + str(tags['EXIF ExposureProgram'])
                         text += ". Edited with " + str(tags['Image Software']) + "."
                 except:
