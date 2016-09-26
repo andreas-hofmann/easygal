@@ -2,7 +2,7 @@
 
 EasyGal is a straightforward gallery website, which displays the contents of a
 directory as thumbnails on a webpage, throws in fancybox integration, displays
-EXIF data in the images and allows to add some extra info/about/anything-pages.
+EXIF data for the images and allows to add some extra info/about/anything-pages.
 
 As you may have guessed, it lacks all the fancy stuff which current photo
 blogs, communities and the like are offering (comments, tags, rating system or
@@ -18,7 +18,7 @@ Using pip3:
 For EXIF-tag parsing, you also need exifread:
 `sudo pip3 install exifread`
 
-Under Debian-based you may run alternatively:
+Under Debian-based systemss you may alternatively run:
 `sudo apt-get install python3-bottle python3-mako python3-pil`
 
 ### Run the gallery
@@ -29,7 +29,7 @@ Under Debian-based you may run alternatively:
 ### Example config for Apache2 under Debian
 - Install mod\_wsgi for python3: `sudo apt-get install libapache2-mod-wsgi-py3`
 - Add the following lines to your server configuration:
-Make sure the data-directory specified in settings.py is writable from
+Make sure the data-directory specified in settings.py is writable!
 
         WSGIDaemonProcess easygal user=www-data group=www-data processes=1 threads=5
         WSGIScriptAlias / /var/www/easygal/easygal.wsgi
@@ -44,7 +44,6 @@ Make sure the data-directory specified in settings.py is writable from
 - Restart apache: `sudo service apache2 restart`
 
 ## TODO
-- Web-upload for images
 - Support for geotags in images
 
 ## Components used
